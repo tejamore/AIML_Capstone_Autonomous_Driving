@@ -21,12 +21,13 @@ import io
 import os
 import traceback
 
-import cv2
-import numpy as np
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 
-from detector import detect_vehicles
+# Delay importing heavy native packages (cv2, numpy) and the detector module
+# until they're needed to avoid import-time failures when Gunicorn imports
+# the application (which caused "Failed to find attribute 'app' in 'app'".)
+
 from analysis import load_data, build_dashboard
 
 app = Flask(__name__)
@@ -46,20 +47,41 @@ def home():
 
 @app.route("/detect", methods=["GET", "POST"])
 def detect():
+    # Import local heavy modules lazily so an import-time failure (e.g. cv2
+    # not available on the host) doesn't prevent Gunicorn from importing the
+    # app object. We catch ImportError and return a friendly message.
+    try:
+        import cv2
+        import numpy as np
+        from detector import detect_vehicles
+    except Exception as exc:  # noqa: BLE001
+        app.logger.exception("Detector import failed: %s", exc)
+        return render_template(
+            "detect.html",
+            error=("Detector is not available: %s. "
+                   "Ensure OpenCV is installed and model files are present." % exc),
+            result_image=None,
+            detections=None,
+        )
+
     if request.method == "GET":
         return render_template("detect.html", result_image=None, detections=None)
 
     if "image" not in request.files or request.files["image"].filename == "":
         return render_template(
-            "detect.html", error="Please choose an image file first.",
-            result_image=None, detections=None,
+            "detect.html",
+            error="Please choose an image file first.",
+            result_image=None,
+            detections=None,
         )
 
     file = request.files["image"]
     if not _allowed_file(file.filename):
         return render_template(
-            "detect.html", error="Unsupported file type. Use PNG/JPG/JPEG/BMP/WEBP.",
-            result_image=None, detections=None,
+            "detect.html",
+            error="Unsupported file type. Use PNG/JPG/JPEG/BMP/WEBP.",
+            result_image=None,
+            detections=None,
         )
 
     try:
@@ -86,7 +108,8 @@ def detect():
         return render_template(
             "detect.html",
             error=f"Detection failed: {exc}",
-            result_image=None, detections=None,
+            result_image=None,
+            detections=None,
         )
 
 
