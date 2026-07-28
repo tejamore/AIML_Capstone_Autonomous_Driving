@@ -5,8 +5,8 @@ services:
     plan: free
     region: oregon
     buildCommand: "pip install -r requirements.txt && python app/download_models.py"
-    startCommand: "gunicorn --chdir app app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
+    startCommand: "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.12.3
+        value: 3.11.4
     healthCheckPath: /api/health
