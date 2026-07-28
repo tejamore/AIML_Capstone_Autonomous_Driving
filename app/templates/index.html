@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Business scenario // AV + ITS</div>
+    <h1 class="title">Detect vehicles.<br><span class="accent">Trace what Autopilot costs.</span></h1>
+    <p class="lede">
+      A two-part capstone on autonomous vehicles and intelligent transport systems:
+      a deep-learning model that localizes vehicles in real time, paired with an
+      exploratory analysis of Tesla Autopilot-related incidents and their effect
+      on road safety.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="{{ url_for('detect') }}">Run vehicle detection →</a>
+      <a class="btn btn-outline" href="{{ url_for('analytics') }}">Open analytics dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2 class="section-title">Two paths, one dataset story</h2>
+    <p class="section-sub">Each path maps to one objective from the capstone brief.</p>
+    <div class="grid-2">
+      <div class="reticle path-card">
+        <div class="tag">Part 1 · Computer Vision</div>
+        <h3>Vehicle detection &amp; localization</h3>
+        <p>
+          Upload a road / traffic-camera image. A MobileNet-SSD convolutional
+          network predicts the vehicle type — car, bus, motorbike, bicycle,
+          train — and draws a bounding box around each one, with a confidence
+          score and inference time reported live.
+        </p>
+        <a class="go" href="{{ url_for('detect') }}">→ /detect</a>
+      </div>
+      <div class="reticle path-card">
+        <div class="tag">Part 2 · Data Science</div>
+        <h3>Autopilot &amp; road-safety analysis</h3>
+        <p>
+          An EDA dashboard over Tesla incident records: events by year, state
+          and weekday; deaths per accident; driver vs. cyclist/pedestrian
+          involvement; and the distribution of verified Autopilot-linked
+          deaths across models.
+        </p>
+        <a class="go" href="{{ url_for('analytics') }}">→ /analytics</a>
+      </div>
+    </div>
+
+    <div class="note">
+      NOTE — the bundled data/Tesla-Deaths.csv is a small synthetic sample so this
+      app runs out-of-the-box. Swap in the real dataset (same column schema) to
+      reproduce the actual capstone findings — see README.md.
+    </div>
+  </div>
+</section>
+{% endblock %}
