@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AIML Capstone — Autonomous Driving{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="{{ url_for('home') }}">
+        <span class="dot"></span> AIML CAPSTONE // AUTONOMOUS DRIVING
+      </a>
+      <div class="navlinks">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint=='home' }}">Overview</a>
+        <a href="{{ url_for('detect') }}" class="{{ 'active' if request.endpoint=='detect' }}">Vehicle Detection</a>
+        <a href="{{ url_for('analytics') }}" class="{{ 'active' if request.endpoint=='analytics' }}">Autopilot Analytics</a>
+      </div>
+    </div>
+  </nav>
+
+  {% block content %}{% endblock %}
+
+  <footer>
+    <div class="wrap">
+      AIML Capstone — Autonomous Driving · Part 1 object detection (OpenCV / MobileNet-SSD) · Part 2 EDA (pandas / matplotlib)
+    </div>
+  </footer>
+</body>
+</html>

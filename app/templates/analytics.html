@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Autopilot Analytics — AIML Capstone{% endblock %}
+{% block content %}
+<section class="hero" style="padding-bottom: 24px;">
+  <div class="wrap">
+    <div class="eyebrow">Part 2 // Autopilot &amp; road safety EDA</div>
+    <h1 class="title" style="font-size: clamp(28px,4vw,40px);">Autopilot Analytics</h1>
+    <p class="lede">
+      Exploratory analysis of Tesla incident records — events over time,
+      who was involved, and how Autopilot factors into the outcomes.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    {% if error %}
+      <div class="alert">Could not load analytics: {{ error }}</div>
+    {% else %}
+    <div class="grid-3" style="margin-bottom:36px;">
+      <div class="stat-card"><div class="stat-num">{{ stats.total_events }}</div><div class="stat-label">TOTAL_EVENTS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.total_deaths }}</div><div class="stat-label">TOTAL_DEATHS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.tesla_driver_deaths }}</div><div class="stat-label">TESLA_DRIVER_DEATHS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.pct_events_with_occupant_death }}%</div><div class="stat-label">EVENTS_WITH_OCCUPANT_DEATH</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.cyclist_ped_events }}</div><div class="stat-label">CYCLIST_OR_PED_EVENTS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.occupant_plus_cyclist_events }}</div><div class="stat-label">OCCUPANT_+_CYCLIST_EVENTS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.other_vehicle_collisions }}</div><div class="stat-label">OTHER_VEHICLE_COLLISIONS</div></div>
+      <div class="stat-card"><div class="stat-num">{{ stats.verified_autopilot_deaths }}</div><div class="stat-label">VERIFIED_AUTOPILOT_DEATHS</div></div>
+    </div>
+
+    <div class="grid-2">
+      {% for key, img in charts.items() %}
+      <div class="chart-card">
+        <h4>{{ key.replace('_',' ')|title }}</h4>
+        <img src="data:image/png;base64,{{ img }}">
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="note">
+      NOTE — figures are computed from data/Tesla-Deaths.csv. The bundled file
+      is a small synthetic sample; replace it with the real dataset (same
+      columns) to reproduce the actual capstone findings.
+    </div>
+  </div>
+</section>
+{% endblock %}

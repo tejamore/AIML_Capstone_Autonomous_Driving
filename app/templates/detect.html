@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Vehicle Detection — AIML Capstone{% endblock %}
+{% block content %}
+<section class="hero" style="padding-bottom: 24px;">
+  <div class="wrap">
+    <div class="eyebrow">Part 1 // Object detection</div>
+    <h1 class="title" style="font-size: clamp(28px,4vw,40px);">Vehicle Detection</h1>
+    <p class="lede">
+      Upload a road or traffic-camera image. The MobileNet-SSD model
+      localizes each vehicle with a bounding box and reports its type
+      and confidence.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    {% if error %}
+      <div class="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      <div class="dropzone">
+        <label class="field-label">IMAGE_INPUT</label>
+        <input type="file" name="image" accept=".png,.jpg,.jpeg,.bmp,.webp" required>
+        <div style="margin-top:18px;">
+          <button class="btn btn-primary" type="submit">Detect vehicles →</button>
+        </div>
+      </div>
+    </form>
+
+    {% if result_image %}
+    <div style="margin-top:36px;" class="grid-2">
+      <div class="reticle">
+        <img src="data:image/jpeg;base64,{{ result_image }}" style="width:100%; border-radius:4px; display:block;">
+      </div>
+      <div>
+        <div class="stat-card" style="margin-bottom:16px;">
+          <div class="stat-num">{{ detections|length }}</div>
+          <div class="stat-label">VEHICLES_DETECTED</div>
+        </div>
+        <div class="stat-card" style="margin-bottom:16px;">
+          <div class="stat-num">{{ inference_ms }} ms</div>
+          <div class="stat-label">INFERENCE_TIME</div>
+        </div>
+        {% if detections %}
+        <table class="det-table">
+          <thead><tr><th>#</th><th>Label</th><th>Confidence</th><th>Box [x1,y1,x2,y2]</th></tr></thead>
+          <tbody>
+          {% for d in detections %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ d.label }}</td>
+              <td>{{ (d.confidence * 100)|round(1) }}%</td>
+              <td>{{ d.box }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="lede" style="font-size:14px;">No vehicles detected above the confidence threshold.</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
